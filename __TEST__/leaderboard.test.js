@@ -94,7 +94,7 @@ describe('POST /leaderboard', () => {
         if (err) return done(err)
         expect(res.status).toBe(201)
         expect(res.body).toHaveProperty(['leaderboard', 'name'], 'Test Post')
-        expect(res.body).toHaveProperty(['leaderboard', 'score'], '30')
+        expect(res.body).toHaveProperty(['leaderboard', 'score'], 30)
         expect(res.body).toHaveProperty(['leaderboard', 'difficulty'], 'Hard')
         done()
       })
@@ -205,6 +205,22 @@ describe('POST /leaderboard', () => {
         if (err) return done(err)
         expect(res.status).toBe(400)
         expect(res.body.message).toBe('Score Must be an Integer')
+        done()
+      })
+  })
+
+  test('Score Must not negative', (done) => {
+    request(app)
+      .post('/leaderboard')
+      .send({
+        name: 'Negative',
+        score: -1,
+        difficulty: 'Easy'
+      })
+      .end((err, res) => {
+        if (err) return done(err)
+        expect(res.status).toBe(400)
+        expect(res.body.message).toBe('Score Must not Negative')
         done()
       })
   })
