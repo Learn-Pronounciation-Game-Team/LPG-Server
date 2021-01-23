@@ -1,3 +1,4 @@
+const { expect } = require('@jest/globals')
 const request = require('supertest')
 const app = require('../app')
 
@@ -15,8 +16,8 @@ describe('Generate Words | GET /word', () => {
                     return done(err)
                 }
                 expect(status).toBe(200)
-                expect(typeof body === 'object')
-                expect(body.length === 5)
+                expect(typeof body).toBe('object')
+                expect(body).toHaveLength(5)
                 body.forEach(word => {
                     expect(word.length).toBeLessThanOrEqual(4)
                 })
@@ -38,8 +39,8 @@ describe('Generate Words | GET /word', () => {
                     return done(err)
                 }
                 expect(status).toBe(200)
-                expect(typeof body === 'object')
-                expect(body.length === 10)
+                expect(typeof body).toBe('object')
+                expect(body).toHaveLength(10)
                 body.forEach(word => {
                     expect(word.length).toBeGreaterThanOrEqual(4)
                     expect(word.length).toBeLessThanOrEqual(6)
@@ -62,11 +63,71 @@ describe('Generate Words | GET /word', () => {
                     return done(err)
                 }
                 expect(status).toBe(200)
-                expect(typeof body === 'object')
-                expect(body.length === 15)
+                expect(typeof body).toBe('object')
+                expect(body).toHaveLength(15)
                 body.forEach(word => {
                     expect(word.length).toBeGreaterThanOrEqual(6)
                 })
+                return done()
+            })
+        })
+    })
+
+    describe('GET /word', () => {
+        test('Returning status 404 with Page Not Found message', done => {
+            request(app)
+            .get('/word/easy')
+            .query({
+                wordmaxxxx: 5
+            })
+            .end((err, res) => {
+                const { body, status } = res
+                if (err) {
+                    return done(err)
+                }
+                expect(status).toBe(404)
+                expect(typeof body).toBe('object')
+                expect(body).toHaveProperty('message', 'Page Not Found!')
+                return done()
+            })
+        })
+    })
+
+    describe('GET /word', () => {
+        test('Returning status 404 with Page Not Found message', done => {
+            request(app)
+            .get('/word/medium')
+            .query({
+                randomWord: 5
+            })
+            .end((err, res) => {
+                const { body, status } = res
+                if (err) {
+                    return done(err)
+                }
+                expect(status).toBe(404)
+                expect(typeof body).toBe('object')
+                expect(body).toHaveProperty('message', 'Page Not Found!')
+                return done()
+            })
+        })
+    })
+
+    describe('GET /word', () => {
+        test('Returning status 404 with Page Not Found message', done => {
+            request(app)
+            .get('/word/hard')
+            .query({
+                asdf: 5
+            })
+            .end((err, res) => {
+                const { body, status } = res
+                if (err) {
+                    return done(err)
+                }
+                expect(status).toBe(404)
+                expect(typeof body).toBe('object')
+                expect(body).toHaveProperty('message', 'Page Not Found!')
                 return done()
             })
         })
