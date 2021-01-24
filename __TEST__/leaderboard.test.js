@@ -1,6 +1,6 @@
 const request = require('supertest')
 const app = require('../app.js')
-const { LeaderboardModel } = require('../models')
+const LeaderboardModel = require('../models/leaderboard')
 
 beforeAll(done => {
   LeaderboardModel.insertMany([
@@ -67,7 +67,7 @@ describe('GET /leaderboard', () => {
 
   test('Must have a key: name, score, difficulty', (done) => {
     request(app)
-      .post('/leaderboard')
+      .get('/leaderboard')
       .end((err, res) => {
         if (err) return done(err)
         expect(res.status).toBe(200)
@@ -82,7 +82,7 @@ describe('GET /leaderboard', () => {
 })
 
 describe('POST /leaderboard', () => {
-  test('Success add to leader board', (done) => {
+  test('Success adding to leaderboard', (done) => {
     request(app)
       .post('/leaderboard')
       .send({
@@ -145,7 +145,7 @@ describe('POST /leaderboard', () => {
       })
   })
 
-  test('Name is to long', (done) => {
+  test('Name is too long', (done) => {
     request(app)
       .post('/leaderboard')
       .send({
@@ -156,12 +156,12 @@ describe('POST /leaderboard', () => {
       .end((err, res) => {
         if (err) return done(err)
         expect(res.status).toBe(400)
-        expect(res.body.message).toBe('Name Cannot More Than 10 Characters')
+        expect(res.body.message).toBe('Name Cannot be More Than 10 Characters')
         done()
       })
   })
 
-  test('Difficulty Invalid', (done) => {
+  test('Invalid Difficulty', (done) => {
     request(app)
       .post('/leaderboard')
       .send({
@@ -172,7 +172,7 @@ describe('POST /leaderboard', () => {
       .end((err, res) => {
         if (err) return done(err)
         expect(res.status).toBe(400)
-        expect(res.body.message).toBe('Difficulty Invalid')
+        expect(res.body.message).toBe('Invalid Difficulty')
         done()
       })
   })
