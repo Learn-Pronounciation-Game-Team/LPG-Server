@@ -24,6 +24,8 @@ class LeaderboardController {
             next({status: 400, message: 'Score Must be a Number'})
         } else if (!Number.isInteger(score)) {
             next({status: 400, message: 'Score Must be an Integer'})
+        } else if (score < 0) {
+            next({status: 400, message: 'Score Must not Negative'})
         } else {
             const playerData = {
                 name: req.body.name,
