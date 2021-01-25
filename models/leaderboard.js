@@ -1,5 +1,5 @@
 const db = require('../config')
-const collection = process.env.MONGO_TEST || "leaderboard"
+const collection = process.env.NODE_ENV === 'test' ? 'leaderboardTest' : 'leaderboard'
 const Leaderboard = db.collection(collection)
 
 class LeaderboardModel {
