@@ -7,17 +7,20 @@ beforeAll(done => {
     {
       name: 'Tester',
       score: 20,
-      difficulty: 'Medium'
+      difficulty: 'Medium',
+      language: 'English'
     },
     {
       name: 'Mencoba',
       score: 13,
-      difficulty: 'Easy'
+      difficulty: 'Easy',
+      language: 'French'
     },
     {
       name: 'Cheater',
       score: 99,
-      difficulty: 'Hard'
+      difficulty: 'Hard',
+      language: 'Italian'
     }
   ]).then(data => {
     done()
@@ -54,6 +57,17 @@ describe('GET /leaderboard', () => {
       })
   })
 
+  test('Find Mencoba language is French', (done) => {
+    request(app)
+      .get('/leaderboard')
+      .end((err, res) => {
+        if (err) return done(err)
+        expect(res.status).toBe(200)
+        expect(res.body.leaderboard[1].language).toBe('French')
+        done()
+      })
+  })
+
   test('Find Cheater score is not 13', (done) => {
     request(app)
       .get('/leaderboard')
@@ -65,7 +79,7 @@ describe('GET /leaderboard', () => {
       })
   })
 
-  test('Must have a key: name, score, difficulty', (done) => {
+  test('Must have a key: name, score, difficulty, language', (done) => {
     request(app)
       .get('/leaderboard')
       .end((err, res) => {
@@ -75,6 +89,7 @@ describe('GET /leaderboard', () => {
           expect(list).toHaveProperty('name')
           expect(list).toHaveProperty('score')
           expect(list).toHaveProperty('difficulty')
+          expect(list).toHaveProperty('language')
         })
         done()
       })
@@ -88,7 +103,8 @@ describe('POST /leaderboard', () => {
       .send({
         name: 'Test Post',
         score: 30,
-        difficulty: 'Hard'
+        difficulty: 'Hard',
+        language: 'Spanish'
       })
       .end((err, res) => {
         if (err) return done(err)
@@ -96,6 +112,7 @@ describe('POST /leaderboard', () => {
         expect(res.body).toHaveProperty(['leaderboard', 'name'], 'Test Post')
         expect(res.body).toHaveProperty(['leaderboard', 'score'], 30)
         expect(res.body).toHaveProperty(['leaderboard', 'difficulty'], 'Hard')
+        expect(res.body).toHaveProperty(['leaderboard', 'language'], 'Spanish')
         done()
       })
   })
@@ -105,7 +122,8 @@ describe('POST /leaderboard', () => {
       .post('/leaderboard')
       .send({
         score: 30,
-        difficulty: 'Hard'
+        difficulty: 'Hard',
+        language: 'English'
       })
       .end((err, res) => {
         if (err) return done(err)
@@ -120,7 +138,8 @@ describe('POST /leaderboard', () => {
       .post('/leaderboard')
       .send({
         name: 'helloworld',
-        difficulty: 'Hard'
+        difficulty: 'Hard',
+        language: 'French'
       })
       .end((err, res) => {
         if (err) return done(err)
@@ -135,12 +154,29 @@ describe('POST /leaderboard', () => {
       .post('/leaderboard')
       .send({
         name: 'miasma',
-        score: 30
+        score: 30,
+        language: 'Italian'
       })
       .end((err, res) => {
         if (err) return done(err)
         expect(res.status).toBe(400)
         expect(res.body.message).toBe('Difficulty Required')
+        done()
+      })
+  })
+
+  test('Language Required', (done) => {
+    request(app)
+      .post('/leaderboard')
+      .send({
+        name: 'miasma',
+        score: 30,
+        difficulty: 'Hard',
+      })
+      .end((err, res) => {
+        if (err) return done(err)
+        expect(res.status).toBe(400)
+        expect(res.body.message).toBe('Language Required')
         done()
       })
   })
@@ -151,7 +187,8 @@ describe('POST /leaderboard', () => {
       .send({
         name: 'INIKARAKTERTERLALUPANJANG',
         score: 30,
-        difficulty: 'Hard'
+        difficulty: 'Hard',
+        language: 'Italian'
       })
       .end((err, res) => {
         if (err) return done(err)
@@ -167,12 +204,30 @@ describe('POST /leaderboard', () => {
       .send({
         name: 'NoobMaster',
         score: 30,
-        difficulty: 'Ngawur'
+        difficulty: 'Ngawur',
+        language: 'French'
       })
       .end((err, res) => {
         if (err) return done(err)
         expect(res.status).toBe(400)
         expect(res.body.message).toBe('Invalid Difficulty')
+        done()
+      })
+  })
+
+  test('Invalid Language', (done) => {
+    request(app)
+      .post('/leaderboard')
+      .send({
+        name: 'NoobMaster',
+        score: 30,
+        difficulty: 'Easy',
+        language: 'Indonesia'
+      })
+      .end((err, res) => {
+        if (err) return done(err)
+        expect(res.status).toBe(400)
+        expect(res.body.message).toBe('Invalid Language')
         done()
       })
   })
@@ -183,7 +238,8 @@ describe('POST /leaderboard', () => {
       .send({
         name: 'NoobMaster',
         score: '40',
-        difficulty: 'Easy'
+        difficulty: 'Easy',
+        language: 'Spanish'
       })
       .end((err, res) => {
         if (err) return done(err)
@@ -199,7 +255,8 @@ describe('POST /leaderboard', () => {
       .send({
         name: 'NoobMaster',
         score: 3.14,
-        difficulty: 'Easy'
+        difficulty: 'Easy',
+        language: 'English'
       })
       .end((err, res) => {
         if (err) return done(err)
@@ -215,7 +272,8 @@ describe('POST /leaderboard', () => {
       .send({
         name: 'Negative',
         score: -1,
-        difficulty: 'Easy'
+        difficulty: 'Easy',
+        language: 'Spanish'
       })
       .end((err, res) => {
         if (err) return done(err)
