@@ -1,5 +1,5 @@
 const db = require('../config')
-const collection = process.env.NODE_ENV === 'test' ? 'leaderboardTest' : 'leaderboard'
+const collection = 'leaderboard'
 const Leaderboard = db.collection(collection)
 
 class LeaderboardModel {
