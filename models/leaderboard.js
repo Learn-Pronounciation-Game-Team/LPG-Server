@@ -1,4 +1,5 @@
-const db = require('../config')
+const { getDatabase } = require('../config')
+const db = getDatabase()
 const collection = process.env.NODE_ENV === 'test' ? 'leaderboardTest' : 'leaderboard'
 const Leaderboard = db.collection(collection)
 
