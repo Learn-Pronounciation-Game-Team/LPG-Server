@@ -1,4 +1,11 @@
-const { Leaderboard } = require('../config')
+const db = require('../config')
+
+let Leaderboard
+db().then(c => {
+  const collection = process.env.NODE_ENV === 'test' ? 'leaderboardTest' : 'leaderboard'
+  Leaderboard = c.collection(collection)
+})
+
 
 class LeaderboardModel {
     static insertOne(value) {

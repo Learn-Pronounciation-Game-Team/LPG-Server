@@ -12,19 +12,11 @@ async function connectToMongo() {
     console.log("Connected to MongoDB");
 
     // Once connected, you can access the database.
-    const db = client.db(database);
-
-    const leaderboardCollection = process.env.NODE_ENV === 'test' ? 'leaderboardTest' : 'leaderboard'
-    const Leaderboard = db.collection(leaderboardCollection)
-    
-    // Export the db instance for use in other parts of your application.
-    module.exports = {
-      Leaderboard
-    };
+    return client.db(database);
   } catch (error) {
     console.error("Error connecting to MongoDB:", error);
   }
 }
 
 // Call the connectToMongo function to initiate the connection.
-connectToMongo();
+module.exports = connectToMongo
