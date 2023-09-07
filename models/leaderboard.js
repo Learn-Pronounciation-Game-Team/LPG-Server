@@ -1,6 +1,6 @@
 const db = require('../config')
 const collection = process.env.NODE_ENV === 'test' ? 'leaderboardTest' : 'leaderboard'
-const Leaderboard = db.collection(collection)
+const Leaderboard = db.collection ? db.collection(collection) : {}
 
 class LeaderboardModel {
     static insertOne(value) {
