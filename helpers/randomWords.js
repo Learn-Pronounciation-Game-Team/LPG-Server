@@ -2,6 +2,7 @@ const randomWords = require('random-words')
 const frenchWords = require('an-array-of-french-words')
 const italianWords = require('an-array-of-italian-words')
 const spanishWords = require('an-array-of-spanish-words')
+const { sample } = require('jalutils')
 
 function generateWords(total, minLength, maxLength) {
     const words = [...new Set(randomWords({exactly: 1000, maxLength: maxLength}))].filter(word => word.length >= minLength)
@@ -20,7 +21,7 @@ function generateFrenchWords(total, minLength, maxLength) {
 
     const randomWords = []
     while(randomWords.length < total) {
-        randomWords.push(words[Math.floor(Math.random() * words.length)])
+        randomWords.push(sample(words))
     }
 
     return randomWords
@@ -37,7 +38,7 @@ function generateItalianWords(total, minLength, maxLength) {
 
     const randomWords = []
     while(randomWords.length < total) {
-        randomWords.push(words[Math.floor(Math.random() * words.length)])
+        randomWords.push(sample(words))
     }
 
     return randomWords
@@ -54,7 +55,7 @@ function generateSpanishWords(total, minLength, maxLength) {
 
     const randomWords = []
     while(randomWords.length < total) {
-        randomWords.push(words[Math.floor(Math.random() * words.length)])
+        randomWords.push(sample(words))
     }
 
     return randomWords

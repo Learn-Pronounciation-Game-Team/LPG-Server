@@ -3,24 +3,36 @@ const uri = process.env.URI_MONGODB || "mongodb://localhost:27017"
 const database = process.env.MONGO_DB || "finalproject"
 
 // Create a MongoClient instance.
-const client = new MongoClient(uri, { useUnifiedTopology: true })
+const client = new MongoClient(uri)
+
+let isConnecting = false
+let connectionPromise = null
 
 // Connect to the MongoDB server.
 async function connectToMongo() {
-  if (!client.isConnected()) {
-    // Check if client is already connected
-    try {
-      await client.connect()
-      console.log("Connected to MongoDB")
-
-      // Once connected, you can access the database.
-      return client.db(database)
-    } catch (error) {
-      console.error("Error connecting to MongoDB:", error)
-    }
+  // If already connecting, return the existing promise
+  if (connectionPromise) {
+    return connectionPromise
   }
 
-  return client.db(database) // Return the connected database instance
+  // If not connecting, start a new connection
+  if (!isConnecting) {
+    isConnecting = true
+    connectionPromise = client.connect()
+      .then(() => {
+        console.log("Connected to MongoDB")
+        isConnecting = false
+        return client.db(database)
+      })
+      .catch((error) => {
+        console.error("Error connecting to MongoDB:", error.message)
+        isConnecting = false
+        connectionPromise = null
+        throw error
+      })
+  }
+
+  return connectionPromise
 }
 
 // Call the connectToMongo function to initiate the connection.
